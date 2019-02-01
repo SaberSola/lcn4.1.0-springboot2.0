@@ -122,6 +122,7 @@ public class LCNDBConnection extends AbstractTransactionThread implements LCNCon
         }
         if (state==1) {
             TxTransactionLocal txTransactionLocal = TxTransactionLocal.current();
+            //这里由于子事务把currentLocal set null 里 所以直接 return
             boolean hasGroup = (txTransactionLocal!=null)?txTransactionLocal.isHasIsGroup():false;
             if (hasGroup) {
                 //加入队列的连接，仅操作连接对象，不处理事务

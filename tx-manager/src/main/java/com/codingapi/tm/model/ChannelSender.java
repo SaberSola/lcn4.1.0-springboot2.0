@@ -40,7 +40,7 @@ public class ChannelSender {
     }
 
     public void send(String msg,Task task){
-        if(channel!=null){
+        if(channel!=null){   //channel ！= null 走这里 msg{'a':'t','子task的唯一key'}
             SocketUtils.sendMsg(channel,msg);
         }else{
             String url = String.format("http://%s/tx/manager/sendMsg",address);

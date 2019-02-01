@@ -30,7 +30,7 @@ public class TransactionControlServiceImpl implements TransactionControlService{
 
 
         String action = resObj.getString("a");
-        String key = resObj.getString("k");
+        String key = resObj.getString("k");  //key 是tm 阻塞的key
 
         IActionService actionService = spring.getBean(action, IActionService.class);
 
@@ -38,14 +38,14 @@ public class TransactionControlServiceImpl implements TransactionControlService{
 
 
         JSONObject data = new JSONObject();
-        data.put("k", key);
-        data.put("a", action);
+        data.put("k", key);    // key 是tm 阻塞的key
+        data.put("a", action); // a 是 t 就是事务
 
         JSONObject params = new JSONObject();
         params.put("d", res);
-        data.put("p", params);
+        data.put("p", params); // p{"a":"t","k":"tm 阻塞的key",{"d":"res 0,1,2"}}
 
-        SocketUtils.sendMsg(ctx, data.toString());
+        SocketUtils.sendMsg(ctx, data.toString()); // 发送给txManger
 
         logger.info("send notify data ->" + data.toString());
     }

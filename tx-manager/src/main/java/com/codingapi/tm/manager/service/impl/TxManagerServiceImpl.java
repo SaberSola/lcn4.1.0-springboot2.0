@@ -42,7 +42,9 @@ public class TxManagerServiceImpl implements TxManagerService {
 
     private Logger logger = LoggerFactory.getLogger(TxManagerServiceImpl.class);
 
-
+    /**
+     * 创建事务组 并存入redis
+     */
     @Override
     public TxGroup createTransactionGroup(String groupId) {
         logger.info("创建事物组");
@@ -53,7 +55,9 @@ public class TxManagerServiceImpl implements TxManagerService {
 
         txGroup.setStartTime(System.currentTimeMillis());
         txGroup.setGroupId(groupId);
-
+        /**
+         * 存入redis的key value是txgroup的信息
+         */
         String key = configReader.getKeyPrefix() + groupId;
         redisServerService.saveTransaction(key, txGroup.toJsonString());
 
@@ -171,8 +175,8 @@ public class TxManagerServiceImpl implements TxManagerService {
     @Override
     public int closeTransactionGroup(String groupId,int state) {
         logger.info("关闭事务组");
-        String key = getTxGroupKey(groupId);
-        TxGroup txGroup = getTxGroup(groupId);
+        String key = getTxGroupKey(groupId); // 这个key 是事务组存入redis 的 缓存key
+        TxGroup txGroup = getTxGroup(groupId);  //根据事务组Id
         if(txGroup==null){
             return 0;
         }

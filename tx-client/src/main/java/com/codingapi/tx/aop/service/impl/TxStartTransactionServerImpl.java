@@ -30,6 +30,15 @@ public class TxStartTransactionServerImpl implements TransactionServer {
     @Autowired
     protected MQTxManagerService txManagerService;
 
+    /**
+     *
+     * 事务的发起方
+     *
+     * @param point
+     * @param info
+     * @return
+     * @throws Throwable
+     */
 
     @Override
     public Object execute(ProceedingJoinPoint point,final TxTransactionInfo info) throws Throwable {
@@ -43,10 +52,12 @@ public class TxStartTransactionServerImpl implements TransactionServer {
 
         int state = 0;
 
+        //新建事务组id
         final String groupId = TxCompensateLocal.current()==null?KidUtils.generateShortUuid():TxCompensateLocal.current().getGroupId();
 
         //创建事务组
         logger.debug("创建事务组并发送消息");
+        //创建事务组
         txManagerService.createTransactionGroup(groupId);
 
         TxTransactionLocal txTransactionLocal = new TxTransactionLocal();
@@ -58,24 +69,32 @@ public class TxStartTransactionServerImpl implements TransactionServer {
         TxTransactionLocal.setCurrent(txTransactionLocal);
 
         try {
+            //执行具体方法 调用远程方法的同时 进入下一个切面 txRunningTransactionServer
             Object obj = point.proceed();
+            /**
+             * 所有的chilrd 结束后 会执行
+             */
             state = 1;
-            return obj;
+            return obj;  //return 后会事务会立即执行操作 并且阻塞
         } catch (Throwable e) {
             state = rollbackException(info,e);
             throw e;
         } finally {
-
+            /**
+             * 业务已经全部执行结束
+             */
             final String type = txTransactionLocal.getType();
-
-            int rs = txManagerService.closeTransactionGroup(groupId, state);
+            /**
+             * 发送关闭事务组的消息 事务组Id state = 1
+             */
+            int rs = txManagerService.closeTransactionGroup(groupId, state); // 获取res 0 ，1 ，2
 
             int lastState = rs==-1?0:state;
 
             int executeConnectionError = 0;
 
             //控制本地事务的数据提交
-            final TxTask waitTask = TaskGroupManager.getInstance().getTask(groupId, type);
+            final TxTask waitTask = TaskGroupManager.getInstance().getTask(groupId, type); // 这里是
             if(waitTask!=null){
                 waitTask.setState(lastState);
                 waitTask.signalTask();

@@ -71,12 +71,12 @@ public class NettyControlServiceImpl implements NettyControlService {
             JSONObject resObj = JSONObject.parseObject(json);
             if (resObj.containsKey("a")) {
                 // tm发送数据给tx模块的处理指令
-                logger.info("receive cmd -> {}", json);
+                logger.info("receive cmd -> {}", json); //msg{'a':'t','子task的唯一key'} json tm发送给 tclient指令
                 transactionControlService.notifyTransactionMsg(ctx,resObj,json);
             }else{
                 //tx发送数据给tm的响应返回数据
 
-                String key = resObj.getString("k");
+                String key = resObj.getString("k"); // key 时候阻塞task 的key 此时 txclient 仍然在阻塞
                 if (!"h".equals(key)) {
                     logger.info("receive response -> {}", json);
                 }
@@ -85,7 +85,11 @@ public class NettyControlServiceImpl implements NettyControlService {
         }
     }
 
-
+    /**
+     * 这里唤醒子事务的task
+     * @param key
+     * @param resObj
+     */
     private void responseMsg(String key, JSONObject resObj) {
         if (!"h".equals(key)) {
             final String data = resObj.getString("d");
@@ -100,7 +104,7 @@ public class NettyControlServiceImpl implements NettyControlService {
                             return data;
                         }
                     });
-                    task.signalTask();
+                    task.signalTask();  //唤醒阻塞key
                 }
 
             }

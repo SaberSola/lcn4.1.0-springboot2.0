@@ -35,6 +35,12 @@ public class TransactionServerFactoryServiceImpl implements TransactionServerFac
     @Autowired
     private ILCNTransactionControl transactionControl;
 
+    /**
+     * 选择事务执行器
+     * @param info
+     * @return
+     * @throws Throwable
+     */
     @Override
     public TransactionServer createTransactionServer(TxTransactionInfo info) throws Throwable {
         if (!SocketManager.getInstance().isNetState()) {

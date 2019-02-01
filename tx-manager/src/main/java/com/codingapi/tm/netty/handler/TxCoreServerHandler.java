@@ -49,6 +49,9 @@ public class TxCoreServerHandler extends ChannelInboundHandlerAdapter { // (1)
         threadPool.execute(new Runnable() {
             @Override
             public void run() {
+                /**
+                 * 收到txClient发来的信息
+                 */
                 service(json,ctx);
             }
         });
@@ -57,20 +60,22 @@ public class TxCoreServerHandler extends ChannelInboundHandlerAdapter { // (1)
     private void service(String json,ChannelHandlerContext ctx){
         if (StringUtils.isNotEmpty(json)) {
             JSONObject jsonObject = JSONObject.parseObject(json);
-            String action = jsonObject.getString("a");
-            String key = jsonObject.getString("k");
+            String action = jsonObject.getString("a");  // 选择action的指令
+            String key = jsonObject.getString("k"); // 阻塞task的key
             JSONObject params = JSONObject.parseObject(jsonObject.getString("p"));
             String channelAddress = ctx.channel().remoteAddress().toString();
 
             IActionService actionService =  nettyService.getActionService(action);
-
+            /**
+             * 根据action 知道到对应的service 此时txclient 的task 还在阻塞
+             */
             String res = actionService.execute(channelAddress,key,params);
 
             JSONObject resObj = new JSONObject();
-            resObj.put("k", key);
-            resObj.put("d", res);
+            resObj.put("k", key);  //对于close 线程而言这阻塞task的 key
+            resObj.put("d", res); //成功为1
 
-            SocketUtils.sendMsg(ctx,resObj.toString());
+            SocketUtils.sendMsg(ctx,resObj.toString()); // 发送给tclient
 
         }
     }

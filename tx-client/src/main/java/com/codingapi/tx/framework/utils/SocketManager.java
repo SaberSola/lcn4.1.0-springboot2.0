@@ -81,7 +81,7 @@ public class SocketManager {
                 e.printStackTrace();
             }
         }
-        SocketUtils.sendMsg(ctx, request.toMsg());
+        SocketUtils.sendMsg(ctx, request.toMsg());  //request 中包含 创建的kid key
         logger.info("send-msg->" + request.toMsg());
     }
 
@@ -97,7 +97,7 @@ public class SocketManager {
 
 
     public String sendMsg(final Request request) {
-        final String key = request.getKey();
+        final String key = request.getKey();   // 在创建Requst的时候会产生一个kid key
         if (ctx != null && ctx.channel() != null && ctx.channel().isActive()) {
             final Task task = ConditionUtils.getInstance().createTask(key);
             ScheduledFuture future = executorService.schedule(new Runnable() {
@@ -120,17 +120,17 @@ public class SocketManager {
                 @Override
                 public void run() {
                     sleepSend(task, request);
-                }
+                } //这里发送消息 等待
             });
 
-            task.awaitTask();
+            task.awaitTask(); //阻塞 知道task 被唤醒
 
             if (!future.isDone()) {
                 future.cancel(false);
             }
 
             try {
-                Object msg = task.getBack().doing();
+                Object msg = task.getBack().doing(); //获取res 0 ，1  2
                 return (String) msg;
             } catch (Throwable e) {
             } finally {

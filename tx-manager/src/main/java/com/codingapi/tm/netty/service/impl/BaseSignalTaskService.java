@@ -10,7 +10,10 @@ import com.lorne.core.framework.utils.task.Task;
  */
 public class BaseSignalTaskService {
 
+
     public String execute(String channelAddress, String key, JSONObject params) {
+
+        //p{"a":"t","k":"tm 阻塞的key",{"d":"res 0,1,2"}}
         String res = "";
         final String data = params.getString("d");
         Task task = ConditionUtils.getInstance().getTask(key);
@@ -21,7 +24,7 @@ public class BaseSignalTaskService {
                     return data;
                 }
             });
-            task.signalTask();
+            task.signalTask(); //唤醒tm 阻塞的task
         }
         return res;
     }

@@ -44,11 +44,22 @@ public class TaskGroupManager {
         return taskGroup;
     }
 
+    /**
+     * 获取事务组
+     * @param key
+     * @return
+     */
     public TaskGroup getTaskGroup(String key) {
         return taskMap.get(key);
     }
 
 
+    /**
+     * 获取 task
+     * @param key
+     * @param type
+     * @return
+     */
     public TxTask getTask(String key,String type) {
         String taskKey = type+"_"+key;
         TaskGroup txGroup =  taskMap.get(key);

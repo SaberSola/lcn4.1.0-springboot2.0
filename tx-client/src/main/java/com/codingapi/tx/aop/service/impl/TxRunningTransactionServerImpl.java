@@ -34,18 +34,37 @@ public class TxRunningTransactionServerImpl implements TransactionServer {
 
     private Logger logger = LoggerFactory.getLogger(TxRunningTransactionServerImpl.class);
 
+    /**
+     *
+     * 事务的参与方 ServiceB
+     * @param point
+     * @param info
+     * @return
+     * @throws Throwable
+     */
     @Override
     public Object execute(final ProceedingJoinPoint point, final TxTransactionInfo info) throws Throwable {
 
         logger.info("事务参与方...");
 
+        //生成子事务Id
         String kid = KidUtils.generateShortUuid();
-        String txGroupId = info.getTxGroupId();
+
+        /**
+         * 获取事务组Id
+         */
+        String txGroupId = info.getTxGroupId();  //获取事务组Id
         logger.debug("--->begin running transaction,groupId:" + txGroupId);
         long t1 = System.currentTimeMillis();
 
+        /**
+         * 判断是否是同一事务组
+         */
         boolean isHasIsGroup =  transactionControl.hasGroup(txGroupId);
 
+        /**
+         * 通过Rpc调用后
+         */
         TxTransactionLocal txTransactionLocal = new TxTransactionLocal();
         txTransactionLocal.setGroupId(txGroupId);
         txTransactionLocal.setHasStart(false);
@@ -56,14 +75,24 @@ public class TxRunningTransactionServerImpl implements TransactionServer {
         TxTransactionLocal.setCurrent(txTransactionLocal);
 
         try {
-
+            /**
+             * 执行 业务
+             */
             Object res = point.proceed();
-
+            /**
+             * 业务执行结束
+             */
             //写操作 处理
             if(!txTransactionLocal.isReadOnly()) {
 
+                /**
+                 * 获取方法字符串
+                 */
                 String methodStr = info.getInvocation().getMethodStr();
-
+                /**
+                 *将子事务添加到 事务组
+                 *同时将子任务的task添加进去
+                 */
                 TxGroup resTxGroup = txManagerService.addTransactionGroup(txGroupId, kid, isHasIsGroup, methodStr);
 
                 //已经进入过该模块的，不再执行此方法

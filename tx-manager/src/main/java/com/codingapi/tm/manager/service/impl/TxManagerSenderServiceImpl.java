@@ -61,7 +61,7 @@ public class TxManagerSenderServiceImpl implements TxManagerSenderService {
     @Override
     public int confirm(TxGroup txGroup) {
         //绑定管道对象，检查网络
-        setChannel(txGroup.getList());
+        setChannel(txGroup.getList()); //为事务组的子事务绑定channel channel跟 ip绑定的
 
         //事务不满足直接回滚事务
         if (txGroup.getState()==0) {
@@ -74,6 +74,9 @@ public class TxManagerSenderServiceImpl implements TxManagerSenderService {
             return -1;
         }
 
+        /**
+         * 异步通知 子事务 这是txclient 关闭事务组的task 还在阻塞
+         */
         boolean hasOk =  transaction(txGroup, 1);
         txManagerService.dealTxGroup(txGroup,hasOk);
         return hasOk?1:0;
@@ -121,6 +124,7 @@ public class TxManagerSenderServiceImpl implements TxManagerSenderService {
             }
 
             CountDownLatchHelper<Boolean> countDownLatchHelper = new CountDownLatchHelper<Boolean>();
+            //遍历事务组里边的task
             for (final TxInfo txInfo : txGroup.getList()) {
                 if (txInfo.getIsGroup() == 0) {
                     countDownLatchHelper.addExecute(new IExecute<Boolean>() {
@@ -131,7 +135,7 @@ public class TxManagerSenderServiceImpl implements TxManagerSenderService {
                             }
 
                             final JSONObject jsonObject = new JSONObject();
-                            jsonObject.put("a", "t");
+                            jsonObject.put("a", "t");   // t 代表通知事务
 
                             /** 补偿请求 **/
                             if (txGroup.getIsCompensate() == 1) {
@@ -140,24 +144,29 @@ public class TxManagerSenderServiceImpl implements TxManagerSenderService {
                                 jsonObject.put("c", checkSate);
                             }
 
-                            jsonObject.put("t", txInfo.getKid());
+                            jsonObject.put("t", txInfo.getKid());  // 这个key 代表子事务的唯一标示
                             final String key = KidUtils.generateShortUuid();
-                            jsonObject.put("k", key);
+                            jsonObject.put("k", key);   // 这个key是下边需要租阻塞的task的key  并不是txclient的key
+                            //txclient 扔然在阻塞
 
-                            Task task = ConditionUtils.getInstance().createTask(key);
-
+                            Task task = ConditionUtils.getInstance().createTask(key);  //创建任务的Task
+                            /**
+                             * schedule 时候为了防止网络问题 造成 task 一直阻塞不释放
+                             */
                             ScheduledFuture future = schedule(key, configReader.getTransactionNettyDelayTime());
+                            /**
+                             * 这列是真正通知各个子事务进行通知
+                             */
+                            threadAwaitSend(task, txInfo, jsonObject.toJSONString()); //当前需要阻塞的task txclient 扔然在阻塞
 
-                            threadAwaitSend(task, txInfo, jsonObject.toJSONString());
-
-                            task.awaitTask();
+                            task.awaitTask();  //经过BaseSignalTaskService 唤醒后
 
                             if (!future.isDone()) {
                                 future.cancel(false);
                             }
 
                             try {
-                                String data = (String) task.getBack().doing();
+                                String data = (String) task.getBack().doing();  // res = 0，1，2
                                 // 1  成功 0 失败 -1 task为空 -2 超过
                                 boolean res = "1".equals(data);
 
@@ -177,10 +186,10 @@ public class TxManagerSenderServiceImpl implements TxManagerSenderService {
                 }
             }
 
-            List<Boolean> hasOks = countDownLatchHelper.execute().getData();
+            List<Boolean> hasOks = countDownLatchHelper.execute().getData();  //阻塞等代
 
             String key = configReader.getKeyPrefix() + txGroup.getGroupId();
-            redisServerService.saveTransaction(key, txGroup.toJsonString());
+            redisServerService.saveTransaction(key, txGroup.toJsonString()); //更新group 信息 此时 txclient close 仍然在等待
 
             boolean hasOk = true;
             for (boolean bl : hasOks) {
@@ -273,7 +282,7 @@ public class TxManagerSenderServiceImpl implements TxManagerSenderService {
         threadPool.execute(new Runnable() {
             @Override
             public void run() {
-                while (!task.isAwait() && !Thread.currentThread().interrupted()) {
+                while (!task.isAwait() && !Thread.currentThread().interrupted()) {  //task 如果不是阻塞状态 sleep 1ms
                     try {
                         Thread.sleep(1);
                     } catch (InterruptedException e) {
@@ -282,7 +291,7 @@ public class TxManagerSenderServiceImpl implements TxManagerSenderService {
                 }
 
                 if(txInfo!=null&&txInfo.getChannel()!=null) {
-                    txInfo.getChannel().send(msg,task);
+                    txInfo.getChannel().send(msg,task); //这里发送给 txclient msg
                 }else{
                     task.setBack(new IBack() {
                         @Override

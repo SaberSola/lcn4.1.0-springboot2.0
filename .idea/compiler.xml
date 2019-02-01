@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="springcloud-mybatis-demo1" />
+        <module name="springcloud-mybatis-demo2" />
+        <module name="springcloud-mybatis-demo3" />
+        <module name="transaction-springcloud" />
+        <module name="tx-client" />
+        <module name="tx-manager" />
+        <module name="tx-plugins-db" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="springcloud-lcn-demo" target="1.8" />
+      <module name="springcloud-mybatis-demo1" target="1.8" />
+      <module name="springcloud-mybatis-demo2" target="1.8" />
+      <module name="springcloud-mybatis-demo3" target="1.8" />
+      <module name="transaction-springcloud" target="1.8" />
+      <module name="tx-client" target="1.8" />
+      <module name="tx-client-dubbo" target="1.8" />
+      <module name="tx-client-springcloud" target="1.8" />
+      <module name="tx-commons" target="1.8" />
+      <module name="tx-jdbcproxy-p6spy" target="1.8" />
+      <module name="tx-lcn" target="1.8" />
+      <module name="tx-logger" target="1.8" />
+      <module name="tx-manager" target="1.8" />
+      <module name="tx-plugins-db" target="1.8" />
+      <module name="tx-spi-message" target="1.8" />
+      <module name="tx-spi-message-netty" target="1.8" />
+      <module name="tx-spi-sleuth" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="springcloud-mybatis-demo1" options="-parameters" />
+      <module name="springcloud-mybatis-demo2" options="-parameters" />
+      <module name="springcloud-mybatis-demo3" options="-parameters" />
+      <module name="tx-client" options="" />
+      <module name="tx-client-dubbo" options="-parameters -Xlint:deprecation" />
+      <module name="tx-client-springcloud" options="-parameters -Xlint:deprecation" />
+      <module name="tx-commons" options="-parameters -Xlint:deprecation" />
+      <module name="tx-jdbcproxy-p6spy" options="-parameters -Xlint:deprecation" />
+      <module name="tx-logger" options="-parameters -Xlint:deprecation" />
+      <module name="tx-manager" options="-parameters" />
+      <module name="tx-spi-message" options="-parameters -Xlint:deprecation" />
+      <module name="tx-spi-message-netty" options="-parameters -Xlint:deprecation" />
+      <module name="tx-spi-sleuth" options="-parameters -Xlint:deprecation" />
+    </option>
+  </component>
+</project>

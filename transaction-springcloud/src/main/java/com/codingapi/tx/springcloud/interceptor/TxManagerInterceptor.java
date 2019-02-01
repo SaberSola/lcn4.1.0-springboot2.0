@@ -24,6 +24,9 @@ public class TxManagerInterceptor {
         String groupId = null;
         String mode = null;
         try {
+            /**
+             * 事务发起者groupId tx-mode 全部为null
+             */
             RequestAttributes requestAttributes = RequestContextHolder.currentRequestAttributes();
             HttpServletRequest request = requestAttributes == null ? null : ((ServletRequestAttributes) requestAttributes).getRequest();
             groupId = request == null ? null : request.getHeader("tx-group");

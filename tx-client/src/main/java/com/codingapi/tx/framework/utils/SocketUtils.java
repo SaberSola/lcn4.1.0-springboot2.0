@@ -26,6 +26,7 @@ public class SocketUtils {
     }
 
     public static void sendMsg(final ChannelHandlerContext ctx, final String msg) {
+        //发送netty消息到 Txmanger
         ctx.writeAndFlush(Unpooled.buffer().writeBytes(msg.getBytes()));
 
     }

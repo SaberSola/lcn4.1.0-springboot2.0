@@ -39,6 +39,19 @@ public class MQTxManagerServiceImpl implements MQTxManagerService {
         SocketManager.getInstance().sendMsg(request);
     }
 
+    /**
+     *
+     * @param groupId   事务组id
+     * @param taskId    任务Id
+     * @param isGroup   是否合并到事务组 true合并 false不合并
+     * @param methodStr   方法参数列表
+     * atg 指令标识 事务调用方 ---> txManger
+     * g:事务组id
+     * t:唤醒taskId
+     * ms: 切面方法名称
+     * s:事务是事务组 0 否 1 是
+     * @return
+     */
     @Override
     public TxGroup addTransactionGroup(String groupId, String taskId, boolean isGroup, String methodStr) {
         JSONObject jsonObject = new JSONObject();
@@ -53,11 +66,15 @@ public class MQTxManagerServiceImpl implements MQTxManagerService {
 
     @Override
     public int closeTransactionGroup(final String groupId, final int state) {
+        /**
+         * 发送消息
+         * 关闭事务组的消息
+         */
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("g", groupId);
         jsonObject.put("s", state);
         Request request = new Request("ctg", jsonObject.toString());
-        String json =  SocketManager.getInstance().sendMsg(request);
+        String json =  SocketManager.getInstance().sendMsg(request); // 获取res 0 ， 1 ，2
         try {
             return Integer.parseInt(json);
         }catch (Exception e){

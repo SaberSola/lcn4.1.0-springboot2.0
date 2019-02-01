@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding" addBOMForNewFiles="with NO BOM">
+    <file url="file://$PROJECT_DIR$" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/springcloud-lcn-demo" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/springcloud-lcn-demo/springcloud-mybatis-demo1" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/springcloud-lcn-demo/springcloud-mybatis-demo2" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/springcloud-lcn-demo/springcloud-mybatis-demo3" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/transaction-springcloud" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/tx-client" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/tx-client-dubbo" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/tx-client-springcloud" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/tx-commons" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/tx-jdbcproxy-p6spy" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/tx-logger" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/tx-manager" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/tx-plugins-db" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/tx-spi-message" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/tx-spi-message-netty" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/tx-spi-sleuth" charset="UTF-8" />
+  </component>
+</project>

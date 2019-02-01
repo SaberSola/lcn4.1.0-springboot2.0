@@ -31,6 +31,9 @@ public class LCNTransactionDataSource extends AbstractResourceProxy<Connection,L
 
     @Override
     protected Connection createLcnConnection(Connection connection, TxTransactionLocal txTransactionLocal) {
+        /**
+         * 事务的发起方会使用 LCNStartConnection
+         */
         nowCount++;
         if(txTransactionLocal.isHasStart()){
             LCNStartConnection lcnStartConnection = new LCNStartConnection(connection,subNowCount);

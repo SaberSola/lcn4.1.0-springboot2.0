@@ -29,6 +29,11 @@ public class TransactionAspect implements Ordered
     @Around("@annotation(com.codingapi.tx.annotation.TxTransaction)")
     public Object transactionRunning(ProceedingJoinPoint point) throws Throwable
     {
+
+
+        /**
+         * 事务切面开始进入
+         */
         logger.debug("annotation-TransactionRunning-start---->");
         Object obj = txManagerInterceptor.around(point);
         logger.debug("annotation-TransactionRunning-end---->");

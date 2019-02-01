@@ -40,6 +40,7 @@ public class AspectBeforeServiceImpl implements AspectBeforeService {
 
         TxTransaction transaction = thisMethod.getAnnotation(TxTransaction.class);
 
+        //事务发起者 txTransactionLocal 为null
         TxTransactionLocal txTransactionLocal = TxTransactionLocal.current();
 
         logger.debug("around--> groupId-> " +groupId+",txTransactionLocal->"+txTransactionLocal);
@@ -52,7 +53,9 @@ public class AspectBeforeServiceImpl implements AspectBeforeService {
         } catch (Exception e) {
             info.setMode(TxTransactionMode.TX_MODE_LCN);
         }
-
+        /**
+         * 根据事务信息选择对应的server start running Server
+         */
         TransactionServer server = transactionServerFactoryService.createTransactionServer(info);
 
         return server.execute(point, info);

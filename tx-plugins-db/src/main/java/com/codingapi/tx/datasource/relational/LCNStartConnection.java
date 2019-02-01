@@ -52,6 +52,8 @@ public class LCNStartConnection extends AbstractTransactionThread implements LCN
             groupId =  txCompensateLocal.getGroupId();
 
             TaskGroup taskGroup = TaskGroupManager.getInstance().createTask(groupId,txCompensateLocal.getType());
+
+            //这里是创建 事务组的task
             waitTask = taskGroup.getCurrent();
 
             startState = txCompensateLocal.getStartState();
@@ -129,6 +131,7 @@ public class LCNStartConnection extends AbstractTransactionThread implements LCN
 
                 return;
             }
+            //去成功会 commit
             startRunnable();
         }
     }

@@ -11,4 +11,9 @@ import org.springframework.stereotype.Service;
 public class ActionTServiceImpl extends BaseSignalTaskService implements IActionService {
 
 
+    /**
+     *
+     * notifyTransactionMsg  p{"a":"t","k":"tm 阻塞的key",{"d":"res 0,1,2"}}
+     */
+
 }

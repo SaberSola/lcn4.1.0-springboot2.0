@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/springcloud-lcn-demo/springcloud-lcn-demo.iml" filepath="$PROJECT_DIR$/springcloud-lcn-demo/springcloud-lcn-demo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/springcloud-lcn-demo/springcloud-mybatis-demo1/springcloud-mybatis-demo1.iml" filepath="$PROJECT_DIR$/springcloud-lcn-demo/springcloud-mybatis-demo1/springcloud-mybatis-demo1.iml" />
+      <module fileurl="file://$PROJECT_DIR$/springcloud-lcn-demo/springcloud-mybatis-demo2/springcloud-mybatis-demo2.iml" filepath="$PROJECT_DIR$/springcloud-lcn-demo/springcloud-mybatis-demo2/springcloud-mybatis-demo2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/springcloud-lcn-demo/springcloud-mybatis-demo3/springcloud-mybatis-demo3.iml" filepath="$PROJECT_DIR$/springcloud-lcn-demo/springcloud-mybatis-demo3/springcloud-mybatis-demo3.iml" />
+      <module fileurl="file://$PROJECT_DIR$/transaction-springcloud/transaction-springcloud.iml" filepath="$PROJECT_DIR$/transaction-springcloud/transaction-springcloud.iml" />
+      <module fileurl="file://$PROJECT_DIR$/tx-client/tx-client.iml" filepath="$PROJECT_DIR$/tx-client/tx-client.iml" />
+      <module fileurl="file://$PROJECT_DIR$/tx-lcn.iml" filepath="$PROJECT_DIR$/tx-lcn.iml" />
+      <module fileurl="file://$PROJECT_DIR$/tx-manager/tx-manager.iml" filepath="$PROJECT_DIR$/tx-manager/tx-manager.iml" />
+      <module fileurl="file://$PROJECT_DIR$/tx-plugins-db/tx-plugins-db.iml" filepath="$PROJECT_DIR$/tx-plugins-db/tx-plugins-db.iml" />
+    </modules>
+  </component>
+</project>

@@ -24,12 +24,20 @@ public class ActionTServiceImpl implements IActionService {
     @Autowired
     private ILCNTransactionControl transactionControl;
 
+    /**
+     *
+     * 有点不太理解 这个 ask.isAwait()是什么时候阻塞的  ？？？？
+     * @param resObj
+     * @param json
+     * @return
+     */
     @Override
     public String execute(JSONObject resObj, String json) {
         String res;
         //通知提醒
-        final int state = resObj.getInteger("c");
-        String taskId = resObj.getString("t");
+        final int state = resObj.getInteger("c");  //c 事务的state
+        String taskId = resObj.getString("t");    // 子事务的key 唯一表示 此时 tc的ctg仍然在阻塞
+        //这个taskId 是
         if(transactionControl.executeTransactionOperation()) {
             TaskGroup task = TaskGroupManager.getInstance().getTaskGroup(taskId);
             logger.info("accept notify data ->" + json);
@@ -67,10 +75,16 @@ public class ActionTServiceImpl implements IActionService {
         return res;
     }
 
+    /**
+     * 此时事务组 会被transcation 状态
+     * @param task
+     * @param state
+     * @return
+     */
     private String notifyWaitTask(TaskGroup task, int state) {
         String res;
         task.setState(state);
-        task.signalTask();
+        task.signalTask(); //唤醒事务组所有的
         int count = 0;
 
         while (true) {

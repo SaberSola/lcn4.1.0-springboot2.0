@@ -24,7 +24,7 @@ public class Request {
     public Request(String action, String params) {
         this.action = action;
         this.params = params;
-        this.key = KidUtils.generateShortUuid();
+        this.key = KidUtils.generateShortUuid();   //内部创建kid key task
     }
 
     public String getKey() {
