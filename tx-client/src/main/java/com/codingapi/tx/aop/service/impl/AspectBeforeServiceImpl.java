@@ -32,11 +32,11 @@ public class AspectBeforeServiceImpl implements AspectBeforeService {
     @Override
     public Object around(String groupId, ProceedingJoinPoint point, String mode) throws Throwable {
 
-        MethodSignature signature = (MethodSignature) point.getSignature();
-        Method method = signature.getMethod();
-        Class<?> clazz = point.getTarget().getClass();
-        Object[] args = point.getArgs();
-        Method thisMethod = clazz.getMethod(method.getName(), method.getParameterTypes());
+        MethodSignature signature = (MethodSignature) point.getSignature(); //切点获取方法签名
+        Method method = signature.getMethod(); //签名获取方法
+        Class<?> clazz = point.getTarget().getClass();// 获取执行器的类
+        Object[] args = point.getArgs(); //获取参数
+        Method thisMethod = clazz.getMethod(method.getName(), method.getParameterTypes()); //类中获取方法
 
         TxTransaction transaction = thisMethod.getAnnotation(TxTransaction.class);
 
