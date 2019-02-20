@@ -61,12 +61,12 @@ public class TxStartTransactionServerImpl implements TransactionServer {
         txManagerService.createTransactionGroup(groupId);
 
         TxTransactionLocal txTransactionLocal = new TxTransactionLocal();
-        txTransactionLocal.setGroupId(groupId);
-        txTransactionLocal.setHasStart(true);
-        txTransactionLocal.setMaxTimeOut(Constants.txServer.getCompensateMaxWaitTime());
-        txTransactionLocal.setMode(info.getTxTransaction().mode());
-        txTransactionLocal.setReadOnly(info.getTxTransaction().readOnly());
-        TxTransactionLocal.setCurrent(txTransactionLocal);
+        txTransactionLocal.setGroupId(groupId); //事务组Id
+        txTransactionLocal.setHasStart(true);   //代表事务的发起着
+        txTransactionLocal.setMaxTimeOut(Constants.txServer.getCompensateMaxWaitTime()); //设置超时时间
+        txTransactionLocal.setMode(info.getTxTransaction().mode()); //事务模式
+        txTransactionLocal.setReadOnly(info.getTxTransaction().readOnly()); //是否只读
+        TxTransactionLocal.setCurrent(txTransactionLocal); //设置ThreadLocal
 
         try {
             //执行具体方法 调用远程方法的同时 进入下一个切面 txRunningTransactionServer
@@ -118,6 +118,7 @@ public class TxStartTransactionServerImpl implements TransactionServer {
             final TxCompensateLocal compensateLocal =  TxCompensateLocal.current();
 
             if (compensateLocal == null) {
+                //本地事务执行失败会会进行补偿机制
                 long end = System.currentTimeMillis();
                 long time = end - start;
                 if ((executeConnectionError == 1&&rs == 1)||(lastState == 1 && rs == 0)) {

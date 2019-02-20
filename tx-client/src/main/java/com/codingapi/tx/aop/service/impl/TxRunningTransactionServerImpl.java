@@ -58,7 +58,7 @@ public class TxRunningTransactionServerImpl implements TransactionServer {
         long t1 = System.currentTimeMillis();
 
         /**
-         * 判断是否是同一事务组
+         * 判断是否是同一事务下
          */
         boolean isHasIsGroup =  transactionControl.hasGroup(txGroupId);
 
@@ -66,12 +66,12 @@ public class TxRunningTransactionServerImpl implements TransactionServer {
          * 通过Rpc调用后
          */
         TxTransactionLocal txTransactionLocal = new TxTransactionLocal();
-        txTransactionLocal.setGroupId(txGroupId);
-        txTransactionLocal.setHasStart(false);
-        txTransactionLocal.setKid(kid);
-        txTransactionLocal.setHasIsGroup(isHasIsGroup);
+        txTransactionLocal.setGroupId(txGroupId); //groupId
+        txTransactionLocal.setHasStart(false);     //是否是发起者
+        txTransactionLocal.setKid(kid);            //子事务 事务单元Id
+        txTransactionLocal.setHasIsGroup(isHasIsGroup); //是否同一个模块被多次请求
         txTransactionLocal.setMaxTimeOut(Constants.txServer.getCompensateMaxWaitTime());
-        txTransactionLocal.setMode(info.getMode());
+        txTransactionLocal.setMode(info.getMode()); //事务mode lcn 模式
         TxTransactionLocal.setCurrent(txTransactionLocal);
 
         try {
